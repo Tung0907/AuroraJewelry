@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <%@ include file="_admin_head.jsp" %>
 <h3><c:choose><c:when test="${not empty product}">Edit product</c:when><c:otherwise>New product</c:otherwise></c:choose></h3>
 

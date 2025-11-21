@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <footer class="bg-dark text-white py-3">
     <div class="container">
         <div class="row">

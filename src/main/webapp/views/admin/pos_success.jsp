@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.example.aurorajewelry.dao.OrderDetailDAO,org.example.aurorajewelry.dao.OrderDAO,org.example.aurorajewelry.model.Order" %>
 <%@ include file="/views/admin/_admin_header.jsp" %>

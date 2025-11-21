@@ -1,3 +1,5 @@
+
+<meta charset="UTF-8">
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:include page="/views/admin/_admin_head.jsp" />

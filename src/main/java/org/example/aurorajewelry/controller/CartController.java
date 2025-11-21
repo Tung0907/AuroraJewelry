@@ -27,12 +27,6 @@ public class CartController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // show cart
-        req.getRequestDispatcher("/views/cart/cart.jsp").forward(req, resp);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
 
@@ -40,21 +34,21 @@ public class CartController extends HttpServlet {
             int productId = Integer.parseInt(req.getParameter("productId"));
             int qty = Integer.parseInt(req.getParameter("qty"));
             Product p = productDAO.findById(productId);
-            if (p == null) { resp.sendRedirect(req.getContextPath()+"/"); return; }
+            if (p == null) { resp.sendRedirect(req.getContextPath() + "/"); return; }
 
-            String key = String.valueOf(productId); // no variant in this simple flow
+            String key = String.valueOf(productId);
             Map<String, CartItem> cart = getCart(req.getSession());
-            CartItem it = cart.get(key);
-            if (it == null) {
-                it = new CartItem();
-                it.setProductId(productId);
-                it.setProductName(p.getProductName());
-                it.setQuantity(qty);
-                it.setUnitPrice(p.getPrice());
-                it.setImageUrl(p.getFirstImage());
-                cart.put(key, it);
+            CartItem item = cart.get(key);
+            if (item == null) {
+                item = new CartItem();
+                item.setProductId(productId);
+                item.setProductName(p.getProductName());
+                item.setQuantity(qty);
+                item.setUnitPrice(p.getPrice());
+                item.setImageUrl(p.getFirstImage());
+                cart.put(key, item);
             } else {
-                it.setQuantity(it.getQuantity() + qty);
+                item.setQuantity(item.getQuantity() + qty);
             }
             resp.sendRedirect(req.getContextPath() + "/cart");
             return;
@@ -64,9 +58,9 @@ public class CartController extends HttpServlet {
             String key = req.getParameter("key");
             Map<String, CartItem> cart = getCart(req.getSession());
             cart.remove(key);
-            resp.sendRedirect(req.getContextPath()+"/cart");
+            resp.sendRedirect(req.getContextPath() + "/cart");
             return;
         }
-        resp.sendRedirect(req.getContextPath()+"/");
+        resp.sendRedirect(req.getContextPath() + "/");
     }
 }

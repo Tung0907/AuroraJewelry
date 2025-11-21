@@ -8,9 +8,7 @@
 
     <display-name>Aurora Jewelry</display-name>
 
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-    </welcome-file-list>
+    <!-- Filter for Authentication -->
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>org.example.aurorajewelry.filter.AuthFilter</filter-class>
@@ -21,5 +19,49 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- Servlet mapping for Admin and POS -->
+    <servlet>
+        <servlet-name>AuthController</servlet-name>
+        <servlet-class>org.example.aurorajewelry.controller.AuthController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthController</servlet-name>
+        <url-pattern>/admin/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- HomeController - Đổi URL Pattern thành /home/product để tránh trùng lặp với POS -->
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>org.example.aurorajewelry.controller.HomeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/home/product</url-pattern> <!-- Đã thay đổi URL Pattern -->
+    </servlet-mapping>
+
+    <!-- CartController -->
+    <servlet>
+        <servlet-name>CartController</servlet-name>
+        <servlet-class>org.example.aurorajewelry.controller.CartController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartController</servlet-name>
+        <url-pattern>/cart/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- POSController - Đảm bảo không bị trùng lặp với servlet khác -->
+    <servlet>
+        <servlet-name>POSController</servlet-name>
+        <servlet-class>org.example.aurorajewelry.controller.admin.POSController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>POSController</servlet-name>
+        <url-pattern>/pos</url-pattern> <!-- Đảm bảo unique URL -->
+    </servlet-mapping>
+
+    <!-- Default Welcome File -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>

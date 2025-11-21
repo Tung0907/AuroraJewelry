@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
-@WebServlet("/pos")
+@WebServlet("/admin/pos")
 public class POSController extends HttpServlet {
     private ProductDAO productDAO = new ProductDAO();
     private ProductVariantDAO variantDAO = new ProductVariantDAO();
@@ -34,12 +34,10 @@ public class POSController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // load quick data
-        req.setAttribute("products", productDAO.findAll()); // small list
+        req.setAttribute("products", productDAO.findAll());  // Hiển thị sản phẩm
         req.getRequestDispatcher("/views/admin/pos.jsp").forward(req, resp);
     }
 
-    // actions: add, update, remove, checkout
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
@@ -53,7 +51,7 @@ public class POSController extends HttpServlet {
             int qty = Integer.parseInt(req.getParameter("qty"));
 
             Product p = productDAO.findById(productId);
-            if (p == null) { resp.sendRedirect(req.getContextPath()+"/pos"); return; }
+            if (p == null) { resp.sendRedirect(req.getContextPath() + "/pos"); return; }
 
             BigDecimal basePrice = p.getPrice();
             BigDecimal add = BigDecimal.ZERO;
@@ -89,18 +87,17 @@ public class POSController extends HttpServlet {
         if ("remove".equals(action)) {
             String key = req.getParameter("key");
             cart.remove(key);
-            resp.sendRedirect(req.getContextPath()+"/pos");
+            resp.sendRedirect(req.getContextPath() + "/pos");
             return;
         }
 
         if ("checkout".equals(action)) {
-            // simple checkout flow for POS
-            String paymentMethod = req.getParameter("paymentMethod"); // Cash / CardOnSwipe
+            String paymentMethod = req.getParameter("paymentMethod");
             BigDecimal total = BigDecimal.ZERO;
             for (CartItem it : cart.values()) total = total.add(it.getUnitPrice().multiply(new BigDecimal(it.getQuantity())));
 
             int employeeId = 1; // giả sử
-            Integer customerId = null; // POS thường không bắt buộc
+            Integer customerId = null; // POS không bắt buộc khách hàng
 
             int orderId = orderDAO.createOrder(customerId, employeeId, "POS", total);
             if (orderId <= 0) {
@@ -117,7 +114,6 @@ public class POSController extends HttpServlet {
             }
 
             if (ok) {
-                // update order payment info
                 orderDAO.updatePayment(orderId, paymentMethod, "Paid");
                 session.removeAttribute("posCart");
                 req.setAttribute("orderId", orderId);
@@ -128,6 +124,6 @@ public class POSController extends HttpServlet {
             }
             return;
         }
-        resp.sendRedirect(req.getContextPath()+"/pos");
+        resp.sendRedirect(req.getContextPath() + "/pos");
     }
 }

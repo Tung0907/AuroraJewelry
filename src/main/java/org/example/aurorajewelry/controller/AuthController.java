@@ -11,30 +11,31 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet({
-        "/login",
-        "/do-login",
-        "/logout"
+        "/admin/login",
+        "/admin/do-login",
+        "/admin/logout",
+        "/admin/register",
+        "/admin/do-register"
 })
 public class AuthController extends HttpServlet {
-
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
-    private final CustomerDAO customerDAO = new CustomerDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
 
-        // Đăng xuất
         if (uri.endsWith("/logout")) {
             req.getSession().invalidate(); // Hủy session khi logout
-            resp.sendRedirect(req.getContextPath() + "/login"); // Chuyển hướng về trang đăng nhập
+            resp.sendRedirect(req.getContextPath() + "/admin/login"); // Chuyển hướng về trang đăng nhập
             return;
         }
 
-        // Hiển thị trang đăng nhập chung
-        if (uri.endsWith("/login")) {
-            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+        if (uri.endsWith("/register")) {
+            req.getRequestDispatcher("/views/auth/admin_register.jsp").forward(req, resp);
+            return;
         }
+
+        req.getRequestDispatcher("/views/auth/admin_login.jsp").forward(req, resp);
     }
 
     @Override
@@ -45,36 +46,43 @@ public class AuthController extends HttpServlet {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
 
-            // Kiểm tra đăng nhập admin hoặc thu ngân
-            Employee emp = employeeDAO.findByEmailAndPassword(email, password);
-            if (emp != null) {
-                // Lưu thông tin người dùng vào session
-                HttpSession session = req.getSession();
-                session.setAttribute("user", emp);
-                session.setAttribute("role", emp.getRole());
+            Employee user = employeeDAO.findByEmailAndPassword(email, password);
 
-                // Chuyển hướng sau khi đăng nhập thành công
-                if ("Admin".equalsIgnoreCase(emp.getRole()) || "Staff".equalsIgnoreCase(emp.getRole())) {
-                    resp.sendRedirect(req.getContextPath() + "/pos"); // Nếu là admin hoặc staff sẽ vào POS
-                    return;
-                }
-            }
-
-            // Kiểm tra đăng nhập khách hàng
-            Customer customer = customerDAO.findByEmailAndPassword(email, password);
-            if (customer != null) {
-                // Lưu thông tin khách hàng vào session
-                HttpSession session = req.getSession();
-                session.setAttribute("user", customer);
-
-                // Chuyển hướng đến trang mua hàng online
-                resp.sendRedirect(req.getContextPath() + "/customer/home");
+            if (user == null) {
+                req.setAttribute("msg", "Email hoặc mật khẩu không đúng");
+                req.getRequestDispatcher("/views/auth/admin_login.jsp").forward(req, resp);
                 return;
             }
 
-            // Nếu không tìm thấy tài khoản hợp lệ
-            req.setAttribute("msg", "Email hoặc mật khẩu không đúng");
-            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp); // Quay lại trang đăng nhập
+            req.getSession().setAttribute("employee", user);
+
+            if (user.getRole().equalsIgnoreCase("Admin")) {
+                resp.sendRedirect(req.getContextPath() + "/admin/dashboard"); // Admin vào trang quản lý
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/pos"); // Thu ngân vào bán hàng tại quầy
+            }
+            return;
+        }
+
+        if (uri.endsWith("/do-register")) {
+            String fullName = req.getParameter("fullName");
+            String email = req.getParameter("email");
+            String password = req.getParameter("password");
+            String role = req.getParameter("role");
+
+            Employee emp = new Employee();
+            emp.setFullName(fullName);
+            emp.setEmail(email);
+            emp.setPassword(password);
+            emp.setRole(role);
+
+            boolean ok = employeeDAO.create(emp);
+
+            if (ok) resp.sendRedirect(req.getContextPath() + "/admin/login");
+            else {
+                req.setAttribute("msg", "Đăng ký thất bại");
+                req.getRequestDispatcher("/views/auth/admin_register.jsp").forward(req, resp);
+            }
         }
     }
 }

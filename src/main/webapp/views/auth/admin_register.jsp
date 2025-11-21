@@ -1,15 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<meta charset="UTF-8">
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8"/>
     <title>Admin - Đăng ký</title>
     <link href="${pageContext.request.contextPath}/assets/bootstrap.min.css" rel="stylesheet"/>
-    <style>
-        body { background:#f4f7fb; display:flex; align-items:center; justify-content:center; height:100vh; }
-        .card { width:480px; padding:22px; background:#fff; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.05); }
-    </style>
 </head>
 <body>
 <div class="card">

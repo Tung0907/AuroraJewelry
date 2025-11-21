@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <%@ page contentType="text/html;charset=UTF-8" %>
 <div class="container py-4">
   <h3>Thanh toán thành công</h3>

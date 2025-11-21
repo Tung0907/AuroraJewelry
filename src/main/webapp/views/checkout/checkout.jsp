@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <%@ page contentType="text/html;charset=UTF-8" %>
 <link href="${pageContext.request.contextPath}/assets/bootstrap.min.css" rel="stylesheet" />
 <div class="container mt-4">

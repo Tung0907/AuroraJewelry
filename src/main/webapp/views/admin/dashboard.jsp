@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <%@ include file="_admin_head.jsp" %>
 <div class="row g-3">
     <div class="col-md-3"><div class="card-stat"><h6>Sản phẩm</h6><h3>${productCount}</h3></div></div>

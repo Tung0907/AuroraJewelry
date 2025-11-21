@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "homeController", urlPatterns = {"/product"})
+@WebServlet(name = "HomeController", urlPatterns = {"/home/product"})
 public class HomeController extends HttpServlet {
     private ProductDAO productDAO = new ProductDAO();
 
