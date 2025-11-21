@@ -30,21 +30,21 @@ public class CustomerDAO {
         return null;
     }
 
-    public int create(Customer cst) {
-        String sql = "INSERT INTO Customers(FullName, Phone, Email, Address) VALUES(?,?,?,?)";
+    public boolean create(Customer cst) {
+        String sql = "INSERT INTO Customers(FullName, Phone, Email, Address, Password) VALUES(?,?,?,?,?)";
         try (Connection c = DBUtil.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
             ps.setString(1, cst.getFullName());
             ps.setString(2, cst.getPhone());
             ps.setString(3, cst.getEmail());
             ps.setString(4, cst.getAddress());
-            if (ps.executeUpdate() > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) return rs.getInt(1);
-                }
-            }
+            ps.setString(5, cst.getPassword());
+
+            return ps.executeUpdate() > 0;
+
         } catch (SQLException e) { e.printStackTrace(); }
-        return -1;
+        return false;
     }
 
     public List<Customer> findAll() {
@@ -90,5 +90,33 @@ public class CustomerDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
+
+    public Customer findByEmailAndPassword(String email, String password) {
+        String sql = "SELECT CustomerID, FullName, Phone, Email, Address, Password, CreatedAt FROM Customers WHERE Email=? AND Password=?";
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setString(2, password);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Customer cu = new Customer();
+                    cu.setCustomerId(rs.getInt("CustomerID"));
+                    cu.setFullName(rs.getString("FullName"));
+                    cu.setPhone(rs.getString("Phone"));
+                    cu.setEmail(rs.getString("Email"));
+                    cu.setAddress(rs.getString("Address"));
+                    cu.setPassword(rs.getString("Password"));
+                    cu.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    return cu;
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return null;
+    }
+
 
 }

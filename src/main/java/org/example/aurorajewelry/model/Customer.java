@@ -9,6 +9,10 @@ public class Customer {
     private String email;
     private String address;
     private Date createdAt;
+    private String password;
+
+    public String getPassword() { return password; }   // ✅ thêm
+    public void setPassword(String password) { this.password = password; }
 
     public int getCustomerId() { return customerId; }
     public void setCustomerId(int customerId) { this.customerId = customerId; }
