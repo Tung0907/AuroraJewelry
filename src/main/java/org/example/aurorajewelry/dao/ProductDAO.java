@@ -14,10 +14,12 @@ public class ProductDAO {
     public List<Product> findAll() {
         List<Product> list = new ArrayList<>();
         String sql = """
-                SELECT ProductID, CategoryID, ProductName, Material, Weight, Gender,
-                       Description, Price
-                FROM Products
-                """;
+            SELECT p.ProductID, p.CategoryID, p.ProductName, p.Material, p.Weight,
+                   p.Gender, p.Description, p.Price,
+                   c.CategoryName
+            FROM Products p
+            JOIN Categories c ON p.CategoryID = c.CategoryID
+            """;
 
         try (Connection c = DBUtil.getConnection();
              PreparedStatement ps = c.prepareStatement(sql);
@@ -31,13 +33,17 @@ public class ProductDAO {
         return list;
     }
 
+
     public Product findById(int id) {
         String sql = """
-                SELECT ProductID, CategoryID, ProductName, Material, Weight, Gender,
-                       Description, Price
-                FROM Products
-                WHERE ProductID = ?
-                """;
+    SELECT p.ProductID, p.CategoryID, p.ProductName, p.Material, p.Weight,
+           p.Gender, p.Description, p.Price,
+           c.CategoryName
+    FROM Products p
+    JOIN Categories c ON p.CategoryID = c.CategoryID
+    WHERE p.ProductID = ?
+    """;
+
 
         try (Connection c = DBUtil.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -288,10 +294,20 @@ public class ProductDAO {
         p.setGender(rs.getString("Gender"));
         p.setDescription(rs.getString("Description"));
         p.setPrice(rs.getBigDecimal("Price"));
+
+        // Load images
         p.setImages(loadImages(p.getProductId(), c));
+
+        // 👉 VERY IMPORTANT: Add category name field
+        try {
+            p.setCategoryName(rs.getString("CategoryName"));
+        } catch (SQLException ex) {
+            // If query does not contain CategoryName, ignore
+        }
 
         return p;
     }
+
 
     private void fillStatement(PreparedStatement ps, Product p) throws Exception {
         ps.setInt(1, p.getCategoryId());

@@ -1,5 +1,6 @@
 package org.example.aurorajewelry.dao;
 
+import org.example.aurorajewelry.model.Order;
 import org.example.aurorajewelry.util.DBUtil;
 import java.sql.*;
 import java.util.*;
@@ -39,4 +40,89 @@ public class StatisticsDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+    public int countProducts() {
+        String sql = "SELECT COUNT(*) FROM Products";
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countCategories() {
+        String sql = "SELECT COUNT(*) FROM Categories";
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countOrders() {
+        String sql = "SELECT COUNT(*) FROM Orders";
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public int countCustomers() {
+        String sql = "SELECT COUNT(*) FROM Customers";
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+    public List<Order> findAll() {
+        List<Order> list = new ArrayList<>();
+
+        String sql = """
+        SELECT OrderID, CustomerID, EmployeeID, OrderDate,
+               TotalAmount, PaymentMethod, Status
+        FROM Orders
+    """;
+
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Order o = new Order();
+                o.setOrderId(rs.getInt("OrderID"));
+                o.setCustomerId(rs.getInt("CustomerID"));
+                o.setEmployeeId(rs.getInt("EmployeeID"));
+                o.setCreatedAt(rs.getTimestamp("OrderDate"));
+                o.setTotalAmount(rs.getBigDecimal("TotalAmount"));
+                o.setPaymentMethod(rs.getString("PaymentMethod"));
+                o.setStatus(rs.getString("Status"));
+                list.add(o);
+            }
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        return list;
+    }
+
 }

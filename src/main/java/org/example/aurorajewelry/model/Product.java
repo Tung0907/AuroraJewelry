@@ -14,9 +14,21 @@ public class Product {
     private String description;
     private BigDecimal price;
     private List<String> images;
-
+    private String categoryName;
     // GETTER & SETTER
 
+    public String getFirstImage() {
+        if (images == null || images.isEmpty()) return "uploads/products/default.png";
+        return images.get(0);
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
     public int getProductId() {
         return productId;
     }

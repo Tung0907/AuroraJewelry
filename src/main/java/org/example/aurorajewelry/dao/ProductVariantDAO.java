@@ -60,4 +60,15 @@ public class ProductVariantDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
+    public boolean increaseStock(int variantId, int qty) {
+        String sql = "UPDATE ProductVariants SET Stock = Stock + ? WHERE VariantID=?";
+        try (Connection c = DBUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, qty);
+            ps.setInt(2, variantId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
 }

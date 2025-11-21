@@ -5,9 +5,10 @@ import org.example.aurorajewelry.dao.ProductImageDAO;
 import org.example.aurorajewelry.dao.ProductVariantDAO;
 import org.example.aurorajewelry.model.Product;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
+
 import java.io.IOException;
 
 @WebServlet(name = "productDetail", urlPatterns = {"/product-detail"})

@@ -1,0 +1,7 @@
+/* simple POS-ish admin style */
+body { font-family: "Segoe UI", Roboto, Arial, sans-serif; background:#f5f7fb; }
+.navbar-brand { font-weight:700; }
+.card-stat { padding:1rem; border-radius:8px; background:white; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+.table-image { width:80px; height:80px; object-fit:cover; border-radius:6px; }
+.action-btn { margin-right:6px; }
+.badge-status { font-size:0.85rem; padding:0.4rem 0.6rem; border-radius:6px; }
