@@ -1,5 +1,8 @@
 package org.example.aurorajewelry.filter;
 
+import org.example.aurorajewelry.model.Customer;
+import org.example.aurorajewelry.model.Employee;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
@@ -25,9 +28,9 @@ public class AuthFilter implements Filter {
 
         // Trường hợp người dùng chưa đăng nhập và đang vào trang bảo mật (admin, pos, v.v.)
         if (user == null) {
-            if (path.startsWith("/admin/") || path.equals("/admin/login") || path.equals("/admin/do-login")) {
+            if (path.startsWith("/admin/")) {
                 resp.sendRedirect(req.getContextPath() + "/admin/login");  // Chuyển hướng đến trang đăng nhập admin
-            } else if (path.startsWith("/pos") || path.equals("/customer/login") || path.equals("/customer/do-login")) {
+            } else if (path.startsWith("/pos")) {
                 resp.sendRedirect(req.getContextPath() + "/customer/login");  // Chuyển hướng đến trang đăng nhập customer
             } else {
                 chain.doFilter(request, response);  // Trang công khai như /index.jsp không cần phải đăng nhập
@@ -35,18 +38,16 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // Phân quyền cho Employee
-        if (user instanceof org.example.aurorajewelry.model.Employee) {
-            org.example.aurorajewelry.model.Employee emp = (org.example.aurorajewelry.model.Employee) user;
+        // Phân quyền cho Employee (Admin, Staff)
+        if (user instanceof Employee) {
+            Employee emp = (Employee) user;
             String role = emp.getRole();
 
-            // Admin chỉ có thể truy cập trang admin
-            if (path.startsWith("/admin/") && !"Admin".equalsIgnoreCase(role)) {
+            // Admin và Staff chỉ có thể truy cập trang admin và POS
+            if (path.startsWith("/admin/") && !"Admin".equalsIgnoreCase(role) && !"Staff".equalsIgnoreCase(role)) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập");
                 return;
             }
-
-            // POS chỉ dành cho Admin và Staff
             if (path.startsWith("/pos") && !("Admin".equalsIgnoreCase(role) || "Staff".equalsIgnoreCase(role))) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập POS");
                 return;
@@ -54,7 +55,7 @@ public class AuthFilter implements Filter {
         }
 
         // Phân quyền cho Customer
-        else if (user instanceof org.example.aurorajewelry.model.Customer) {
+        else if (user instanceof Customer) {
             if (path.startsWith("/admin/") || path.startsWith("/pos")) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập");
                 return;

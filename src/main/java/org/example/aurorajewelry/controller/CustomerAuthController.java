@@ -24,8 +24,8 @@ public class CustomerAuthController extends HttpServlet {
         String uri = req.getRequestURI();
 
         if (uri.endsWith("/customer/logout")) {
-            req.getSession().invalidate();
-            resp.sendRedirect(req.getContextPath() + "/");
+            req.getSession().invalidate(); // Đăng xuất khách hàng
+            resp.sendRedirect(req.getContextPath() + "/"); // Quay lại trang chủ
             return;
         }
         if (uri.endsWith("/customer/login")) {
@@ -37,7 +37,7 @@ public class CustomerAuthController extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect(req.getContextPath() + "/");
+        resp.sendRedirect(req.getContextPath() + "/"); // Nếu không khớp với bất kỳ url nào, quay lại trang chủ
     }
 
     @Override
@@ -48,6 +48,7 @@ public class CustomerAuthController extends HttpServlet {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
 
+            // Kiểm tra đăng nhập khách hàng
             Customer cus = customerDAO.findByEmailAndPassword(email, password);
 
             if (cus == null) {
@@ -57,7 +58,7 @@ public class CustomerAuthController extends HttpServlet {
             }
 
             req.getSession().setAttribute("customer", cus);
-            resp.sendRedirect(req.getContextPath() + "/");
+            resp.sendRedirect(req.getContextPath() + "/"); // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
             return;
         }
 
@@ -82,7 +83,7 @@ public class CustomerAuthController extends HttpServlet {
 
             Customer saved = customerDAO.findByEmailAndPassword(email, password);
             req.getSession().setAttribute("customer", saved);
-            resp.sendRedirect(req.getContextPath() + "/");
+            resp.sendRedirect(req.getContextPath() + "/"); // Chuyển hướng đến trang chủ sau khi đăng ký thành công
         }
     }
 }

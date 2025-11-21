@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ include file="layout/header.jsp" %>
+<%@ include file="/views/layout/header.jsp" %>  <!-- Sửa lại đường dẫn -->
 <div class="container">
     <h2>Chào mừng ${customer.fullName}</h2>
     <div class="row">
@@ -17,4 +17,6 @@
         </c:forEach>
     </div>
 </div>
-<%@ include file="layout/footer.jsp" %>
+<%@ include file="/views/layout/header.jsp" %>
+
+

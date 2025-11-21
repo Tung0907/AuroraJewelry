@@ -9,9 +9,8 @@
     <display-name>Aurora Jewelry</display-name>
 
     <welcome-file-list>
-        <welcome-file>auth/login</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>org.example.aurorajewelry.filter.AuthFilter</filter-class>
